@@ -1,0 +1,79 @@
+<html>
+ <head>
+ <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+ <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+ </head>
+ <body>
+
+  <canvas id="canvas" width="500" height="500"></canvas>
+ 
+  <script>
+ 
+  var canvas = $("#canvas");
+ 
+  if(canvas[0].getContext){
+   var ctx = canvas[0].getContext("2d");
+  } else {
+   alert("canvas problem");
+  }
+ 
+  $(document).ready(function() {
+ 
+  var socket = io();
+  var down = false;
+ 
+  $("#canvas").mousedown(function(){
+     down = true;
+     ctx.beginPath();
+     socket.send("drop");
+  });
+ 
+ 
+  $("#canvas").mouseup(function(){
+     down = false;
+     socket.send("drag");
+  });
+ 
+ 
+  $("#canvas").mousemove(function(e){
+     if(down == true){
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 1;
+      ctx.lineJoin = "round";
+      ctx.lineTo(e.pageX + 1, e.pageY + 1);
+      ctx.stroke();
+      socket.send(e.pageX + ":" + e.pageY);
+     }
+  
+  });
+ 
+ //====================================================================
+ 
+ alert("hello");
+ 
+ socket.on('message', function(msg){
+ 
+ var mh = msg.n;
+ 
+ if(mh == "drop" || mh == "drag"){
+  ctx.beginPath();
+ } else{
+  arr = mh.split(":");
+ }
+ 
+  ctx.strokeStyle = 'black';
+  ctx.lineWidth = 1;
+  ctx.lineJoin = "round";
+  ctx.lineTo(arr[0],arr[1]);
+  ctx.stroke();
+
+ });
+ 
+
+ });
+ 
+</script>
+ 
+<body>
+ 
+</html>

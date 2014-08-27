@@ -7,11 +7,9 @@ var io = require('socket.io')(http);
 io.on('connection', function(socket){ 
      
     socket.on('message',function(msg){
-    	console.log(msg);
-        socket.broadcast.emit('message', {n:msg});
+        socket.broadcast.emit('message', msg);
      });
- 
- 
+
     socket.on('disconnect',function(){
         console.log('Server has disconnected');
     });

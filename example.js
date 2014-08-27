@@ -173,8 +173,6 @@
             box-shadow: rgba(0, 0, 0, 0.2) 3px 3px 4px;
          }
       </style>
-       <script type="text/javascript" src="/socket.io/socket.io.js"></script>
- <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
    </head>
 
    <body>
@@ -247,8 +245,6 @@
     
     <script src='keyboard.js'></script>
     <script type="text/javascript">
-    var socket = io();
-    
     /*
      * Copyright (C) 2012 David Geary. This code is from the book
      * Core HTML5 Canvas, published by Prentice-Hall in 2012.
@@ -413,14 +409,11 @@
     // Icons.........................................................
 
     function drawLineIcon(rect) {
-
        iconContext.beginPath();
        iconContext.moveTo(rect.x + 5, rect.y + 5);
        iconContext.lineTo(rect.x + rect.w - 5, rect.y + rect.h - 5);
        iconContext.stroke();
-       
     }
-
 
     function drawRectIcon(rect) {
        fillIconLowerRight(rect);
@@ -672,7 +665,6 @@
        drawingContext.moveTo(mousedown.x, mousedown.y);
        drawingContext.lineTo(loc.x, loc.y);
        drawingContext.stroke();
-
     }
 
     function drawRubberbandCircle(loc) {
@@ -797,16 +789,12 @@
 
     // Finish drawing lines, circles, and rectangles.................
 
-    function finishDrawingLine(loc) {
+    function finishDrawingLine(loc) {   
        drawingContext.beginPath();
        drawingContext.moveTo(mousedown.x, mousedown.y);
        drawingContext.lineTo(loc.x, loc.y);
        drawingContext.stroke();
-       socket.emit('message', {"moveto":[{"rectx": mousedown.x, "recty": mousedown.y}], "lineto":[{"rectx1": loc.x, "recty1": loc.y}]});
     }
-    socket.on('message', function(msg){
-      console.log('a');
-    });
 
     function finishDrawingCircle(loc) {
        var angle = Math.atan(rubberbandH/rubberbandW),
@@ -825,7 +813,6 @@
        }
 
        drawingContext.stroke();
-       socket.emit('message', {"rectx": mousedown.x, "recty": mousedown.y,"radius": radius, "draw": "circle"});
     }
 
     function finishDrawingRectangle() {
@@ -1270,8 +1257,16 @@
 
     lineWidthSelect.onchange = function (e) {
        drawingContext.lineWidth = lineWidthSelect.value;
+    /*
+    var c = drawingContext.canvas,
+        sw = c.width,
+        sh = c.height,
+        dw = sw * lineWidthSelect.value,
+        dh = sh * lineWidthSelect.value;
 
-    socket.emit('message', {"linewidth": lineWidthSelect.value, 'line': 'true'});
+    drawingContext.scale(lineWidthSelect.value, lineWidthSelect.value);
+    drawingContext.drawImage(c, 0, 0);
+    */
     };
 
     eraseAllButton.onclick = function (e) {
